@@ -1,0 +1,6 @@
+---
+- name: Setup kubectl on master node
+  hosts: master
+  become: true
+  roles:
+    - kubectl

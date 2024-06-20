@@ -1,0 +1,25 @@
+---
+# tasks file for roles/coba
+- name: Download kubectl binary
+  # get_url:
+  #   url: 'https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl'
+  #   dest: /usr/local/bin/kubectl
+  #   mode: '0755'
+  command: 'curl -LO https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl'
+  args:
+    chdir: /usr/local/bin/
+  register: kubectl_download
+
+- name: Set kubectl binary executable
+  command: 'chmod +x /usr/local/bin/kubectl'
+  when: kubectl_download.changed
+
+- name: Verify kubectl binary
+  command: kubectl version --client
+  when: kubectl_download is changed
+  register: kubectl_version_check
+
+- name: Print kubectl version
+  debug:
+    msg: 'kubectl version: {{ kubectl_version_check.stdout }}'
+  when: kubectl_download is changed
