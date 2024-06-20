@@ -1,3 +1,5 @@
 ---
 # defaults file for roles/coba
-kubectl_version: v1.30.2
+kubernetes_repo_url: 'https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/'
+kubernetes_gpg_key_url: 'https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key'
+kubernetes_version: 'v1.30.2'

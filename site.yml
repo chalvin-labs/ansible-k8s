@@ -1,6 +1,4 @@
 ---
-- name: Setup kubectl on master node
-  hosts: master
-  become: true
-  roles:
-    - kubectl
+- import_playbook: preflight.yml
+- import_playbook: master.yml
+- import_playbook: worker.yml
