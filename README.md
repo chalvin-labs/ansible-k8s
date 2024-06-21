@@ -2,7 +2,7 @@
 
 This lab contains Ansible roles and playbooks for provisioning and deploying Kubernetes clusters using Ansible.
 
-There are roles for installing components like kubectl, kubeadm, kubelet, containerd, and also configuring network needed for kubernetes.
+There are roles for installing components like kubectl, kubeadm, kubelet, containerd, and also configuring network needed for Kubernetes.
 
 ## Repository Structure
 

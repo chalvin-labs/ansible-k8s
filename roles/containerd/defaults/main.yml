@@ -1,2 +1,15 @@
 ---
 # defaults file for roles/containerd
+containerd_version: "1.7.18"
+
+containerd_download_url: "https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz"
+
+containerd_install_dir: "/usr/local"
+
+containerd_temp_dir: "/tmp/containerd"
+
+containerd_service_url: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
+
+containerd_service_dest: "{{ systemd_dir }}/containerd.service"
+
+systemd_dir: "/usr/local/lib/systemd/system"

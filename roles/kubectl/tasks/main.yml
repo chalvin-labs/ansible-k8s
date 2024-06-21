@@ -1,9 +1,15 @@
 ---
 # tasks file for roles/kubectl
-- name: Check if Kubernetes apt-key exists
-  stat:
-    path: /etc/apt/keyrings/kubernetes-apt-keyring.asc
-  register: kubernetes_apt_key
+- name: Ensure dependencies are installed.
+  apt:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - python3-apt
+    - gpg
+    - apt-transport-https
+    - ca-certificates
+    - curl
 
 - name: Add Kubernetes apt-key
   get_url:
@@ -11,21 +17,12 @@
     dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
     mode: "0644"
     force: true
-  when: not kubernetes_apt_key.stat.exists
-
-- name: Check if Kubernetes APT repository exists
-  command: grep -r "{{ kubernetes_repo_url }}" /etc/apt/sources.list /etc/apt/sources.list.d/
-  register: repo_check
-  check_mode: no
-  ignore_errors: true
-  changed_when: false
 
 - name: Add Kubernetes APT repository
   apt_repository:
     repo: "{{ kubernetes_apt_repo }}"
     state: present
     update_cache: yes
-  when: repo_check.rc != 0
 
 - name: Install Kubectl
   apt:

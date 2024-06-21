@@ -1,0 +1,9 @@
+---
+# defaults file for roles/runc
+runc_version: "v1.1.13"
+
+runc_url: "https://github.com/opencontainers/runc/releases/download/{{ runc_version }}/runc.amd64"
+
+runc_install_path: "/usr/local/sbin/runc"
+
+runc_temp_path: "/tmp/runc.amd64"

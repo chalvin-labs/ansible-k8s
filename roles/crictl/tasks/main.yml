@@ -1,0 +1,44 @@
+---
+# tasks file for roles/crictl
+- name: Check if crictl binary exists
+  stat:
+    path: "{{ crictl_install_dir }}/crictl"
+  register: crictl_binary
+
+- name: Create temporary directory for crictl
+  file:
+    path: "{{ crictl_temp_dir }}"
+    state: directory
+  when: not crictl_binary.stat.exists
+
+- name: Download crictl binary
+  get_url:
+    url: "{{ crictl_url }}"
+    dest: "{{ crictl_temp_dir }}/crictl.tar.gz"
+  when: not crictl_binary.stat.exists
+
+- name: Ensure crictl install directory exists
+  file:
+    path: "{{ crictl_install_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Extract crictl binary
+  unarchive:
+    src: "{{ crictl_temp_dir }}/crictl.tar.gz"
+    dest: "{{ crictl_install_dir }}"
+    remote_src: yes
+  when: not crictl_binary.stat.exists
+
+- name: Create crictl configuration file
+  copy:
+    src: crictl.yaml
+    dest: /etc/crictl.yaml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Clean up temporary files
+  file:
+    path: "{{ crictl_temp_dir }}"
+    state: absent

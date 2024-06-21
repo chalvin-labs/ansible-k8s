@@ -1,0 +1,36 @@
+---
+# tasks file for roles/cni-plugins
+- name: Check if CNI plugin file exists
+  stat:
+    path: "{{ cni_plugin_file }}"
+  register: cni_plugin_file
+
+- name: Create temporary directory for CNI plugins
+  file:
+    path: "{{ cni_temp_dir }}"
+    state: directory
+  when: not cni_plugin_file.stat.exists
+
+- name: Download CNI plugin
+  get_url:
+    url: "{{ cni_plugin_url }}"
+    dest: "{{ cni_temp_dir }}/cni-plugins.tgz"
+  when: not cni_plugin_file.stat.exists
+
+- name: Ensure CNI install directory exists
+  file:
+    path: "{{ cni_install_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Extract CNI plugin
+  unarchive:
+    src: "{{ cni_temp_dir }}/cni-plugins.tgz"
+    dest: "{{ cni_install_dir }}"
+    remote_src: yes
+  when: not cni_plugin_file.stat.exists
+
+- name: Clean up temporary files
+  file:
+    path: "{{ cni_temp_dir }}"
+    state: absent

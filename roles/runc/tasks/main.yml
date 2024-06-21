@@ -1,0 +1,23 @@
+---
+# tasks file for roles/runc
+- name: Check if runc binary exists
+  stat:
+    path: "{{ runc_install_path }}"
+  register: runc_binary
+
+- name: Download runc binary
+  get_url:
+    url: "{{ runc_url }}"
+    dest: "{{ runc_temp_path }}"
+    mode: "0755"
+  when: not runc_binary.stat.exists
+
+- name: Install runc binary
+  command: install -m 755 {{ runc_temp_path }} {{ runc_install_path }}
+  when: not runc_binary.stat.exists
+
+- name: Clean up temporary runc binary
+  file:
+    path: "{{ runc_temp_path }}"
+    state: absent
+  when: not runc_binary.stat.exists
