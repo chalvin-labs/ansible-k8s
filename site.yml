@@ -1,4 +1,4 @@
 ---
-- import_playbook: preflight.yml
-- import_playbook: master.yml
-- import_playbook: worker.yml
+- import_playbook: playbooks/preflight.yml
+- import_playbook: playbooks/master.yml
+- import_playbook: playbooks/worker.yml
