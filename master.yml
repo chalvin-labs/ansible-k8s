@@ -1,5 +1,7 @@
 ---
-- hosts: master
+- hosts: masters
   become: yes
   roles:
     - kubectl
+    - kubeadm
+    - kubelet
