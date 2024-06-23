@@ -1,6 +1,5 @@
 ---
 - hosts: workers
   become: yes
-  roles:
-    - kubeadm
-    - kubelet
+  tasks:
+    - kubeadm join

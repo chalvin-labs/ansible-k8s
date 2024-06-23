@@ -11,6 +11,12 @@
     - ca-certificates
     - curl
 
+- name: Ensure the /etc/apt/keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
 - name: Add Kubernetes apt-key
   get_url:
     url: "{{ kubernetes_apt_gpg_key }}"

@@ -6,4 +6,6 @@ runc_url: "https://github.com/opencontainers/runc/releases/download/{{ runc_vers
 
 runc_install_path: "/usr/local/sbin/runc"
 
+runc_install_dir: "/usr/local/sbin"
+
 runc_temp_path: "/tmp/runc.amd64"

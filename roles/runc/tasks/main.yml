@@ -5,6 +5,13 @@
     path: "{{ runc_install_path }}"
   register: runc_binary
 
+- name: Ensure runc install directory exists
+  file:
+    path: "{{ runc_install_dir }}"
+    state: directory
+    mode: "0755"
+  when: not runc_binary.stat.exists
+
 - name: Download runc binary
   get_url:
     url: "{{ runc_url }}"

@@ -17,17 +17,12 @@
     dest: "{{ crictl_temp_dir }}/crictl.tar.gz"
   when: not crictl_binary.stat.exists
 
-- name: Ensure crictl install directory exists
-  file:
-    path: "{{ crictl_install_dir }}"
-    state: directory
-    mode: "0755"
-
 - name: Extract crictl binary
   unarchive:
     src: "{{ crictl_temp_dir }}/crictl.tar.gz"
     dest: "{{ crictl_install_dir }}"
     remote_src: yes
+    extra_opts: [--strip-components=1]
   when: not crictl_binary.stat.exists
 
 - name: Create crictl configuration file
@@ -42,3 +37,4 @@
   file:
     path: "{{ crictl_temp_dir }}"
     state: absent
+  when: not crictl_binary.stat.exists

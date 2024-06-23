@@ -2,7 +2,7 @@
 # tasks file for roles/containerd
 - name: Check if containerd binary exists
   stat:
-    path: "{{ containerd_install_dir }}/bin/containerd"
+    path: "{{ containerd_install_dir }}/containerd"
   register: containerd_binary
 
 - name: Create temporary directory for containerd
@@ -22,6 +22,7 @@
     src: "{{ containerd_temp_dir }}/containerd.tar.gz"
     dest: "{{ containerd_install_dir }}"
     remote_src: yes
+    extra_opts: [--strip-components=1]
   when: not containerd_binary.stat.exists
 
 - name: Ensure systemd directory exists
@@ -45,6 +46,19 @@
     name: containerd
     enabled: yes
     state: started
+
+- name: Create containerd directory
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Copy containerd config files
+  copy:
+    src: config.toml
+    dest: "{{ containerd_config_file }}"
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Clean up temporary files
   file:

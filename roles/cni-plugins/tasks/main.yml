@@ -1,5 +1,9 @@
 ---
 # tasks file for roles/cni-plugins
+- name: Check if CNI plugins are already installed
+  stat:
+    path: "{{ cni_install_dir }}"
+
 - name: Create temporary directory for CNI plugins
   file:
     path: "{{ cni_temp_dir }}"
@@ -21,6 +25,7 @@
     src: "{{ cni_temp_dir }}/cni-plugins.tgz"
     dest: "{{ cni_install_dir }}"
     remote_src: yes
+    extra_opts: [--strip-components=1]
 
 - name: Clean up temporary files
   file:
