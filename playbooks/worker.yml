@@ -1,5 +1,0 @@
----
-- hosts: workers
-  become: yes
-  tasks:
-    - kubeadm join

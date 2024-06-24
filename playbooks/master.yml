@@ -1,8 +1,0 @@
----
-- hosts: masters
-  become: yes
-  tasks:
-    # - kubeadm init
-    # - .kube directory
-    # - copy admin conf
-    # - install pod network (flannel)

@@ -22,7 +22,6 @@
     src: "{{ crictl_temp_dir }}/crictl.tar.gz"
     dest: "{{ crictl_install_dir }}"
     remote_src: yes
-    extra_opts: [--strip-components=1]
   when: not crictl_binary.stat.exists
 
 - name: Create crictl configuration file

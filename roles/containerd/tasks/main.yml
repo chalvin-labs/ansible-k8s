@@ -60,6 +60,11 @@
     group: root
     mode: "0644"
 
+- name: Restart contianerd service
+  systemd:
+    name: containerd
+    state: restarted
+
 - name: Clean up temporary files
   file:
     path: "{{ containerd_temp_dir }}"
