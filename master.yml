@@ -1,0 +1,71 @@
+---
+- hosts: masters
+  become: yes
+  roles:
+    - containerd
+    - runc
+    - cni-plugins
+    - crictl
+    - kubeadm
+    - kubelet
+    - kubectl
+
+- hosts: masters
+  become: yes
+  tasks:
+    - name: Configure container runtime
+      copy:
+        dest: /etc/kubernetes/kubeadm-config.yaml
+        content: |
+          kind: ClusterConfiguration
+          apiVersion: kubeadm.k8s.io/v1beta3
+          networking:
+            podSubnet: "10.244.0.0/16"
+          ---
+          kind: KubeletConfiguration
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          runtimeRequestTimeout: "15m"
+          cgroupDriver: "systemd"
+          systemReserved:
+            cpu: 100m
+            memory: 350M
+          kubeReserved:
+            cpu: 100m
+            memory: 50M
+          enforceNodeAllocatable:
+          - pods
+
+    - name: Pulling images required for setting up a Kubernetes cluster
+      shell: kubeadm config images pull >> pulled_images.log
+      args:
+        chdir: /root
+        creates: pulled_images.log
+
+    - name: Initialize the cluster
+      shell: kubeadm init --config /etc/kubernetes/kubeadm-config.yaml >> cluster_initialized.log
+      args:
+        chdir: /root
+        creates: cluster_initialized.log
+
+    - name: Create .kube directory
+      become: yes
+      become_user: root
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    - name: Copy admin.conf to User's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /root/.kube/config
+        remote_src: yes
+        owner: root
+
+    - name: Install Pod Network
+      become: yes
+      become_user: root
+      shell: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml >> pod_network_setup.log
+      args:
+        chdir: $HOME
+        creates: pod_network_setup.log
